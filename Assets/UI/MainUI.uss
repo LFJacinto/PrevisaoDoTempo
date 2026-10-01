@@ -3,6 +3,11 @@
     -unity-font-style: bold;
     margin-bottom: 10px;
     color: rgb(21, 67, 96);
+    white-space: normal;
+}
+
+#title-label {
+    -unity-text-align: upper-center;
 }
 
 .temp {
@@ -21,4 +26,13 @@
 
 .app-button:hover {
     background-color: rgb(41, 128, 185);
+}
+
+.app-field {
+    flex-direction: column;
+}
+
+.app-field > .unity-base-field__label {
+    min-width: 0;
+    margin-bottom: 4px;
 }

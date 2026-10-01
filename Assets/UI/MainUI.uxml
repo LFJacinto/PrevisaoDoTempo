@@ -4,7 +4,7 @@
 
         <ui:VisualElement name="search-screen" style="flex-grow: 1; padding: 20px;">
             <ui:Label text="Previsão do Tempo" name="title-label" class="title" />
-            <ui:TextField name="city-input" label="Cidade" />
+            <ui:TextField name="city-input" label="Cidade" class="app-field" />
             <ui:Button name="search-button" text="Buscar" class="app-button" />
             <ui:Button name="favorites-button" text="Ver Favoritos" class="app-button" style="margin-top: 5px;" />
             <ui:ListView name="results-list" style="flex-grow: 1; margin-top: 10px;" />
