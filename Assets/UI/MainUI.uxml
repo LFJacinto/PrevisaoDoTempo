@@ -6,7 +6,6 @@
             <ui:Label text="Previsão do Tempo" name="title-label" class="title" />
             <ui:TextField name="city-input" label="Cidade" class="app-field" />
             <ui:Button name="search-button" text="Buscar" class="app-button" />
-            <ui:Button name="favorites-button" text="Ver Favoritos" class="app-button" style="margin-top: 5px;" />
             <ui:ListView name="results-list" style="flex-grow: 1; margin-top: 10px;" />
         </ui:VisualElement>
 
@@ -15,17 +14,8 @@
             <ui:Label name="city-name-label" class="title" />
             <ui:Label name="current-temp-label" class="temp" />
             <ui:Label name="current-condition-label" />
-            <ui:Button name="favorite-button" text="Favoritar" class="app-button" style="margin-top: 10px;" />
             <ui:Label text="Próximos dias:" style="margin-top: 15px;" />
             <ui:ListView name="daily-list" style="flex-grow: 1; margin-top: 5px;" />
-        </ui:VisualElement>
-
-        <ui:VisualElement name="favorites-screen" style="flex-grow: 1; padding: 20px; display: none;">
-            <ui:Button name="favorites-back-button" text="Voltar" class="app-button" />
-            <ui:Label text="Favoritos" class="title" />
-            <ui:ListView name="favorites-list" style="flex-grow: 1; margin-top: 10px;" />
-            <ui:Button name="view-favorite-button" text="Ver Clima" class="app-button" style="margin-top: 10px;" />
-            <ui:Button name="remove-favorite-button" text="Remover" class="app-button" style="margin-top: 5px;" />
         </ui:VisualElement>
 
     </ui:VisualElement>

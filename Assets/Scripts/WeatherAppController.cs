@@ -10,30 +10,19 @@ public class WeatherAppController : MonoBehaviour
     VisualElement root;
     VisualElement searchScreen;
     VisualElement detailScreen;
-    VisualElement favoritesScreen;
 
     TextField cityInput;
     Button searchButton;
-    Button favoritesButton;
     ListView resultsList;
 
     Button backButton;
-    Button favoriteButton;
     Label cityNameLabel;
     Label currentTempLabel;
     Label currentConditionLabel;
     ListView dailyList;
 
-    Button favoritesBackButton;
-    ListView favoritesList;
-    Button viewFavoriteButton;
-    Button removeFavoriteButton;
-    FavoriteCity selectedFavorite;
-
     List<GeoResult> searchResults = new List<GeoResult>();
     DailyForecast currentDaily;
-    GeoResult currentCity;
-    List<FavoriteCity> favorites = new List<FavoriteCity>();
 
     void OnEnable()
     {
@@ -41,32 +30,19 @@ public class WeatherAppController : MonoBehaviour
 
         searchScreen = root.Q<VisualElement>("search-screen");
         detailScreen = root.Q<VisualElement>("detail-screen");
-        favoritesScreen = root.Q<VisualElement>("favorites-screen");
 
         cityInput = root.Q<TextField>("city-input");
         searchButton = root.Q<Button>("search-button");
-        favoritesButton = root.Q<Button>("favorites-button");
         resultsList = root.Q<ListView>("results-list");
 
         backButton = root.Q<Button>("back-button");
-        favoriteButton = root.Q<Button>("favorite-button");
         cityNameLabel = root.Q<Label>("city-name-label");
         currentTempLabel = root.Q<Label>("current-temp-label");
         currentConditionLabel = root.Q<Label>("current-condition-label");
         dailyList = root.Q<ListView>("daily-list");
 
-        favoritesBackButton = root.Q<Button>("favorites-back-button");
-        favoritesList = root.Q<ListView>("favorites-list");
-        viewFavoriteButton = root.Q<Button>("view-favorite-button");
-        removeFavoriteButton = root.Q<Button>("remove-favorite-button");
-
         searchButton.clicked += OnSearchClicked;
-        favoritesButton.clicked += ShowFavoritesScreen;
         backButton.clicked += ShowSearchScreen;
-        favoritesBackButton.clicked += ShowSearchScreen;
-        favoriteButton.clicked += OnFavoriteClicked;
-        viewFavoriteButton.clicked += OnViewFavoriteClicked;
-        removeFavoriteButton.clicked += OnRemoveFavoriteClicked;
 
         resultsList.makeItem = () => new Label();
         resultsList.bindItem = (element, i) =>
@@ -82,13 +58,6 @@ public class WeatherAppController : MonoBehaviour
             var label = element as Label;
             label.text = $"{currentDaily.time[i]}: {currentDaily.temperature_2m_min[i]:0}°/{currentDaily.temperature_2m_max[i]:0}° — {DescreverClima(currentDaily.weather_code[i])}";
         };
-
-        favoritesList.makeItem = () => new Label();
-        favoritesList.bindItem = (element, i) =>
-        {
-            (element as Label).text = favorites[i].name;
-        };
-        favoritesList.selectionChanged += OnFavoriteSelected;
 
         ShowSearchScreen();
     }
@@ -131,20 +100,8 @@ public class WeatherAppController : MonoBehaviour
         }
     }
 
-    void OnFavoriteSelected(IEnumerable<object> selection)
-    {
-        foreach (var item in selection)
-        {
-            if (item is FavoriteCity fav)
-                selectedFavorite = fav;
-            break;
-        }
-    }
-
     IEnumerator FetchWeather(GeoResult city)
     {
-        currentCity = city;
-
         string lat = city.latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
         string lon = city.longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
         string url = $"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}" +
@@ -176,62 +133,16 @@ public class WeatherAppController : MonoBehaviour
         }
     }
 
-    void OnFavoriteClicked()
-    {
-        if (currentCity == null) return;
-
-        bool jaExiste = favorites.Exists(f => f.name == currentCity.name);
-        if (!jaExiste)
-        {
-            favorites.Add(new FavoriteCity
-            {
-                name = currentCity.name,
-                latitude = currentCity.latitude,
-                longitude = currentCity.longitude
-            });
-        }
-    }
-
-    void OnViewFavoriteClicked()
-    {
-        if (selectedFavorite == null) return;
-        var city = new GeoResult { name = selectedFavorite.name, latitude = selectedFavorite.latitude, longitude = selectedFavorite.longitude };
-        StartCoroutine(FetchWeather(city));
-    }
-
-    void OnRemoveFavoriteClicked()
-    {
-        if (selectedFavorite == null) return;
-        favorites.Remove(selectedFavorite);
-        selectedFavorite = null;
-        favoritesList.itemsSource = favorites;
-        favoritesList.RefreshItems();
-        favoritesList.ClearSelection();
-    }
-
     void ShowSearchScreen()
     {
         searchScreen.style.display = DisplayStyle.Flex;
         detailScreen.style.display = DisplayStyle.None;
-        favoritesScreen.style.display = DisplayStyle.None;
     }
 
     void ShowDetailScreen()
     {
         searchScreen.style.display = DisplayStyle.None;
         detailScreen.style.display = DisplayStyle.Flex;
-        favoritesScreen.style.display = DisplayStyle.None;
-    }
-
-    void ShowFavoritesScreen()
-    {
-        favoritesList.itemsSource = favorites;
-        favoritesList.RefreshItems();
-        favoritesList.ClearSelection();
-
-        searchScreen.style.display = DisplayStyle.None;
-        detailScreen.style.display = DisplayStyle.None;
-        favoritesScreen.style.display = DisplayStyle.Flex;
     }
 
     string DescreverClima(int code)

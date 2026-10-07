@@ -39,11 +39,3 @@ public class WeatherResponse
     public CurrentWeather current;
     public DailyForecast daily;
 }
-
-[Serializable]
-public class FavoriteCity
-{
-    public string name;
-    public double latitude;
-    public double longitude;
-}
